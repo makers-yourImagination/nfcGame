@@ -3,259 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC ATM App</title>
+    <title>NFC Visa App</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #a2c2e8, #f7f7f7);
+            text-align: center;
+            background-color: #e0e0e0;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
         #app-container {
-            width: 450px;
-            background: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            margin: 50px auto;
             padding: 20px;
-            text-align: center;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        #app-container:hover {
+            transform: scale(1.02);
         }
         h1 {
-            font-size: 28px;
             margin-bottom: 20px;
-            color: #333;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+            color: #007bff;
         }
-        .input-group {
-            margin: 15px 0;
-        }
-        input {
-            padding: 10px;
+        button {
+            padding: 10px 20px;
             font-size: 16px;
-            width: calc(100% - 20px);
-            border: 2px solid #007bff;
-            border-radius: 5px;
-            transition: border-color 0.3s;
-        }
-        input:focus {
-            border-color: #0056b3;
-            outline: none;
-        }
-        .scan-button {
-            background: linear-gradient(90deg, #007bff, #0056b3);
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
+            margin: 10px 0;
             cursor: pointer;
-            transition: background 0.3s, transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-        .scan-button:hover {
-            background: linear-gradient(90deg, #0056b3, #004494);
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        }
-        .scan-button:active {
-            transform: scale(0.95);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-        .key {
+            border: none;
+            border-radius: 5px;
             background-color: #007bff;
             color: white;
-            padding: 20px;
-            border-radius: 10px;
-            font-size: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
         }
-        .key:hover {
+        button:hover {
             background-color: #0056b3;
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         }
-        .key:active {
-            transform: scale(0.95);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        #notifications {
-            margin-top: 20px;
-            max-height: 100px;
-            overflow-y: auto;
-            text-align: left;
-        }
-        .notification {
-            background: #f0f0f0;
-            border-left: 5px solid #007bff;
+        input {
+            margin: 10px 0;
             padding: 10px;
-            margin: 5px 0;
+            font-size: 16px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        #balance-display {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+        #card-name {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        #notification {
             display: none;
-        }
-        .notification.show {
-            display: block;
-            animation: slideIn 0.5s ease;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(-10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .key.add-balance {
+            margin-top: 20px;
+            padding: 10px;
             background-color: #28a745;
-        }
-        .key.add-balance:hover {
-            background-color: #218838;
-        }
-        .key.deduct-balance {
-            background-color: #dc3545;
-        }
-        .key.deduct-balance:hover {
-            background-color: #c82333;
-        }
-        .key.transfer-balance {
-            background-color: #ffc107;
-        }
-        .key.transfer-balance:hover {
-            background-color: #e0a800;
+            color: white;
+            border-radius: 5px;
+            transition: opacity 0.5s ease;
+            opacity: 0;
         }
     </style>
 </head>
 <body>
     <div id="app-container">
-        <h1>NFC ATM</h1>
-        <div class="input-group">
-            <input type="text" id="card-name" placeholder="Enter card name" />
-            <button id="scan-nfc" class="scan-button">Scan Card</button>
+        <h1>NFC Visa App</h1>
+        <button id="scan-nfc">Scan NFC Card</button>
+        <div>
+            <input type="text" id="card-name-input" placeholder="Enter card name" style="display:none;" />
+            <button id="set-card-name" style="display:none;">Set Card Name</button>
+            <input type="number" id="amount" placeholder="Enter amount" />
+            <button id="add-balance">Add Balance</button>
+            <button id="deduct-balance">Deduct Balance</button>
         </div>
-        <div class="input-group">
-            <input type="text" id="amount" placeholder="Amount" />
+        <div>
+            <input type="text" id="transfer-card-id" placeholder="Transfer to Card ID" />
+            <input type="number" id="transfer-amount" placeholder="Transfer amount" />
+            <button id="transfer-balance">Transfer Balance</button>
         </div>
-        <div class="keypad">
-            <div class="key" data-value="1">1</div>
-            <div class="key" data-value="2">2</div>
-            <div class="key" data-value="3">3</div>
-            <div class="key" data-value="4">4</div>
-            <div class="key" data-value="5">5</div>
-            <div class="key" data-value="6">6</div>
-            <div class="key" data-value="7">7</div>
-            <div class="key" data-value="8">8</div>
-            <div class="key" data-value="9">9</div>
-            <div class="key" data-value="0">0</div>
-            <div class="key add-balance" id="add-balance">Add Balance</div>
-            <div class="key deduct-balance" id="deduct-balance">Deduct Balance</div>
-            <div class="key transfer-balance" id="transfer-balance">Transfer Balance</div>
-        </div>
-        <input type="text" id="recipient-card-id" placeholder="Recipient Card ID" />
-        <div id="notifications"></div>
+        <div id="balance-display">Current Balance: $0</div>
+        <div id="card-name"></div>
+        <div id="notification"></div>
     </div>
 
     <script>
-        const notifications = document.getElementById('notifications');
+        const balanceDisplay = document.getElementById('balance-display');
+        const cardNameDisplay = document.getElementById('card-name');
+        const cardNameInput = document.getElementById('card-name-input');
+        const setCardNameButton = document.getElementById('set-card-name');
         const amountInput = document.getElementById('amount');
-        const cardNameInput = document.getElementById('card-name');
-        const recipientCardIdInput = document.getElementById('recipient-card-id');
+        const notification = document.getElementById('notification');
         const cardBalances = {};
-        let cardScanned = false; // Flag to track if a card has been scanned
+        let currentCardId = null;
 
-        // Notification helper
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.className = 'notification';
+        // Function to show notifications
+        function showNotification(message, isError = false) {
             notification.textContent = message;
-            notifications.appendChild(notification);
+            notification.style.backgroundColor = isError ? '#dc3545' : '#28a745'; // Red for errors, green for success
+            notification.style.display = 'block';
+            notification.style.opacity = 1;
+
             setTimeout(() => {
-                notification.classList.add('show');
-            }, 50);
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notifications.removeChild(notification), 500);
+                notification.style.opacity = 0;
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500);
             }, 3000);
         }
 
-        // Keypad functionality
-        document.querySelectorAll('.key').forEach(key => {
-            key.addEventListener('click', () => {
-                if (!cardScanned) {
-                    showNotification('Please scan a card first.');
-                    return; // Prevent any action if card is not scanned
+        // Simulate NFC Scan
+        document.getElementById('scan-nfc').addEventListener('click', async () => {
+            if ('NDEFReader' in window) {
+                try {
+                    const nfcReader = new NDEFReader();
+                    await nfcReader.scan();
+                    showNotification('NFC scanning started...');
+
+                    nfcReader.onreading = (event) => {
+                        currentCardId = event.serialNumber || "Card" + Math.random().toString(36).substring(7);
+                        showNotification(`Card detected: ${currentCardId}`);
+
+                        // Initialize balance for new card
+                        if (!cardBalances[currentCardId]) {
+                            cardBalances[currentCardId] = 0;
+                        }
+                        balanceDisplay.textContent = `Current Balance: $${cardBalances[currentCardId]}`;
+
+                        // Show card name input
+                        cardNameInput.style.display = 'block';
+                        setCardNameButton.style.display = 'block';
+                    };
+                } catch (error) {
+                    showNotification(`Error starting NFC scan: ${error}`, true);
                 }
-                if (key.id === 'add-balance') {
-                    addBalance();
-                } else if (key.id === 'deduct-balance') {
-                    deductBalance();
-                } else if (key.id === 'transfer-balance') {
-                    transferBalance();
-                } else {
-                    // Update amount input with clicked number
-                    amountInput.value += key.dataset.value;
-                }
-            });
+            } else {
+                showNotification('NFC not supported on this device.', true);
+            }
         });
 
-        // Simulate NFC Scan
-        document.getElementById('scan-nfc').addEventListener('click', () => {
-            const cardId = "Card" + Math.random().toString(36).substring(7);
-            const cardName = cardNameInput.value.trim() || `Card ${Object.keys(cardBalances).length + 1}`;
-            showNotification(`Card detected: ${cardName} (${cardId})`);
-
-            if (!cardBalances[cardId]) {
-                cardBalances[cardId] = { name: cardName, balance: 0 };
+        // Set Card Name
+        setCardNameButton.addEventListener('click', () => {
+            const cardName = cardNameInput.value.trim();
+            if (cardName && currentCardId) {
+                cardNameDisplay.textContent = `Card Name: ${cardName}`;
+                cardNameInput.style.display = 'none';
+                setCardNameButton.style.display = 'none';
+                showNotification(`Card name set to: ${cardName}`);
+            } else {
+                showNotification('Please enter a valid card name.', true);
             }
-            cardScanned = true; // Set flag to true after scanning
-            showNotification(`Current balance for ${cardName}: $${cardBalances[cardId].balance}`);
         });
 
         // Add Balance
-        function addBalance() {
-            const cardId = Object.keys(cardBalances).find(id => cardBalances[id].name === cardNameInput.value.trim());
+        document.getElementById('add-balance').addEventListener('click', () => {
             const amount = parseFloat(amountInput.value);
-            if (cardId && amount > 0) {
-                cardBalances[cardId].balance += amount;
-                showNotification(`Added $${amount} to ${cardBalances[cardId].name}. New balance: $${cardBalances[cardId].balance}`);
+            if (currentCardId && amount > 0) {
+                cardBalances[currentCardId] += amount;
+                balanceDisplay.textContent = `Current Balance: $${cardBalances[currentCardId]}`;
+                showNotification(`Added $${amount} to ${currentCardId}. New balance: $${cardBalances[currentCardId]}`);
             } else {
-                showNotification('Invalid amount.');
+                showNotification('No card detected or invalid amount.', true);
             }
-        }
+        });
 
         // Deduct Balance
-        function deductBalance() {
-            const cardId = Object.keys(cardBalances).find(id => cardBalances[id].name === cardNameInput.value.trim());
+        document.getElementById('deduct-balance').addEventListener('click', () => {
             const amount = parseFloat(amountInput.value);
-            if (cardId && amount > 0 && cardBalances[cardId].balance >= amount) {
-                cardBalances[cardId].balance -= amount;
-                showNotification(`Deducted $${amount} from ${cardBalances[cardId].name}. New balance: $${cardBalances[cardId].balance}`);
+            if (currentCardId && amount > 0 && cardBalances[currentCardId] >= amount) {
+                cardBalances[currentCardId] -= amount;
+                balanceDisplay.textContent = `Current Balance: $${cardBalances[currentCardId]}`;
+                showNotification(`Deducted $${amount} from ${currentCardId}. New balance: $${cardBalances[currentCardId]}`);
             } else {
-                showNotification('Insufficient balance or invalid amount.');
+                showNotification('No card detected, insufficient balance, or invalid amount.', true);
             }
-        }
+        });
 
         // Transfer Balance
-        function transferBalance() {
-            const senderCardId = Object.keys(cardBalances).find(id => cardBalances[id].name === cardNameInput.value.trim());
-            const recipientCardId = recipientCardIdInput.value.trim();
-            const amount = parseFloat(amountInput.value);
+        document.getElementById('transfer-balance').addEventListener('click', () => {
+            const targetCardId = document.getElementById('transfer-card-id').value.trim();
+            const transferAmount = parseFloat(document.getElementById('transfer-amount').value);
 
-            if (senderCardId && recipientCardId && amount > 0 && cardBalances[senderCardId].balance >= amount) {
-                if (!cardBalances[recipientCardId]) {
-                    cardBalances[recipientCardId] = { name: `Card ${recipientCardId}`, balance: 0 };
+            if (currentCardId && targetCardId && transferAmount > 0 && cardBalances[currentCardId] >= transferAmount) {
+                // Check if the target card exists
+                if (!cardBalances[targetCardId]) {
+                    cardBalances[targetCardId] = 0; // Initialize balance for the target card if it doesn't exist
                 }
-                cardBalances[senderCardId].balance -= amount;
-                cardBalances[recipientCardId].balance += amount;
-                showNotification(`Transferred $${amount} from ${cardBalances[senderCardId].name} to ${cardBalances[recipientCardId].name}.`);
+
+                // Perform the transfer
+                cardBalances[currentCardId] -= transferAmount;
+                cardBalances[targetCardId] += transferAmount;
+
+                // Update balance display
+                balanceDisplay.textContent = `Current Balance: $${cardBalances[currentCardId]}`;
+                showNotification(`Transferred $${transferAmount} to ${targetCardId}. Your new balance: $${cardBalances[currentCardId]}`);
             } else {
-                showNotification('Invalid transfer: Check card IDs and balance.');
+                showNotification('Invalid transfer details or insufficient balance.', true);
             }
-        }
+        });
     </script>
 </body>
 </html>
